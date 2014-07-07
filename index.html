@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="reveal.js/css/reveal.min.css"/>
+    <style type="text/css">code{white-space: pre;}</style>
+    <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+    </style>
+    <link rel="stylesheet" href="css/simple.css"/>
+  <link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+    <title>What Python can learn from Haskell</title>
+    <link rel="stylesheet" href="css/slides.css"/>
+    <script src="d3/d3.min.js"></script>
+    <script src="js/slides.js"></script>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+
+<section id="title" class="slide level1">
+<h1>What Python can learn from Haskell</h1>
+<h3>
+    
+Bob Ippolito (<a href="https://twitter.com/etrepum"><span class="citation" data-cites="etrepum">@etrepum</span></a>)<br> EuroPython Berlin<br> 21 July 2014
+</h3>
+<h4>
+<a href="http://bob.ippoli.to/python-haskell-ep2014/">bob.ippoli.to/python-haskell-ep2014</a>
+</h4>
+
+</section>
+<section id="who-am-i" class="slide level1">
+<h1>Who am I?</h1>
+<ul>
+<li>Python user since 2001 (<a href="https://github.com/simplejson/simplejson">simplejson</a>, Mac stuff)</li>
+<li>Founded Mochi Media (2005-2012, sold in 2010)</li>
+<li><a href="http://www.haskell.org/">Haskell</a> user since 2012 (ported <a href="http://exercism.io">exercism.io</a> curriculum)</li>
+<li>Doing a bit of advising/investing in startups</li>
+<li>Currently focusing on code education non-profit <a href="http://www.missionbit.com/">Mission Bit</a></li>
+</ul>
+</section>
+<section id="python-is-not-all-bad" class="slide level1">
+<h1>Python is not all bad!</h1>
+<ul>
+<li>I love Python's community</li>
+<li>Many great ideas and libraries come from here</li>
+<li>Works wonderfully for many users</li>
+<li>Workarounds exist for most issues (<a href="http://pypy.org/">PyPy</a>, <a href="http://numba.pydata.org/">Numba</a>, <a href="http://cython.org/">Cython</a>, …)</li>
+</ul>
+</section>
+<section id="haskell-is-not-all-good" class="slide level1">
+<h1>Haskell is not all good!</h1>
+<ul>
+<li>Smaller community</li>
+<li>Non-strict evaluation</li>
+<li>Sometimes documentation is an academic paper</li>
+<li>Different terminology (Monoid, Functor, Monad, …)</li>
+</ul>
+</section>
+<section id="ignorance-is-bliss" class="slide level1">
+<h1>Ignorance is bliss</h1>
+<ul>
+<li>If you are perfectly happy with Python, and don't want it to change even a little bit, you might want to leave now :)</li>
+<li>I was a lot happier with Python until I started learning Erlang and then Haskell</li>
+<li>… but I'm a better programmer because of it (<a href="http://www.paulgraham.com/avg.html">Blub Paradox</a>?)</li>
+</ul>
+</section>
+<section id="paradox" class="slide level1">
+<h1></h1>
+<dl>
+<dt>
+<em class="large-quote">Nasty little paradox: the better something works, the less likely it'll be improved.</em>
+</dt>
+<dd>
+<br>— <a href="http://erlang.org/pipermail/erlang-questions/2010-February/049635.html">Richard O'Keefe</a>
+</dd>
+</dl>
+
+</section>
+<section id="hard-time" class="slide level1">
+<h1>Python makes […] hard</h1>
+<ul>
+<li>writing code that works</li>
+<li>maintaining code</li>
+<li>creating good abstractions</li>
+<li>running code efficiently</li>
+</ul>
+</section>
+<section id="correctness" class="slide level1">
+<h1>Correctness</h1>
+<ul>
+<li>You will make mistakes in any language</li>
+<li>Python defers all type checking to runtime</li>
+<li>Static analysis tools for Python are primitive</li>
+<li>Writing code to test for common mistakes is a lot of work</li>
+</ul>
+</section>
+<section id="python-nonsense" class="slide level1">
+<h1>Python nonsense</h1>
+<ul>
+<li>The Python language guarantees that this should raise TypeError</li>
+</ul>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="co">&quot;&quot;&quot;This module is nonsense!&quot;&quot;&quot;</span>
+
+<span class="kw">def</span> main():
+    <span class="co">&quot;&quot;&quot;What is this, JavaScript?&quot;&quot;&quot;</span>
+    <span class="dt">print</span>(<span class="dv">1</span> + <span class="st">&quot;1&quot;</span>)
+
+<span class="kw">if</span> <span class="ot">__name__</span> == <span class="st">&#39;__main__&#39;</span>:
+    main()</code></pre>
+</section>
+<section id="lets-see-what-python-thinks" class="slide level1">
+<h1>Let's see what Python thinks</h1>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">python</span> -mcompileall nonsense.py 
+<span class="kw">Compiling</span> nonsense.py ...
+$ <span class="kw">echo</span> <span class="ot">$?</span>
+<span class="kw">0</span></code></pre>
+</section>
+<section id="pyflakes-to-the-rescue" class="slide level1">
+<h1>pyflakes to the rescue?</h1>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">pyflakes</span> nonsense.py 
+$ <span class="kw">echo</span> <span class="ot">$?</span>
+<span class="kw">0</span></code></pre>
+</section>
+<section id="what-about-pylint" class="slide level1">
+<h1>What about Pylint?</h1>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">pylint</span> --enable=all nonsense.py
+[…]
+
+<span class="kw">Global</span> evaluation
+<span class="kw">-----------------</span>
+<span class="kw">Your</span> code has been rated at 10.00/10</code></pre>
+</section>
+<section id="do-better-tools-exist" class="slide level1">
+<h1>Do better tools exist?</h1>
+<ul>
+<li>Nothing I could find could catch this simple case</li>
+<li>Most tools are concerned with the general case of Python, which makes it very difficult to do anything useful</li>
+<li>Python 3 already has syntax for function annotations, and we've had decent AST tools for years</li>
+<li>Will talk about one promising option in a bit</li>
+</ul>
+</section>
+<section id="erlang-nonsense" class="slide level1">
+<h1>Erlang nonsense</h1>
+<pre class="sourceCode erlang"><code class="sourceCode erlang"><span class="kw">-module</span><span class="fu">(</span><span class="ch">nonsense</span><span class="fu">).</span>
+<span class="kw">-export</span><span class="fu">([</span><span class="ch">start</span><span class="kw">/</span><span class="dv">0</span><span class="fu">]).</span>
+
+<span class="fu">start()</span> <span class="kw">-&gt;</span>
+    <span class="fu">io:format(</span><span class="st">&quot;~p&quot;</span><span class="fu">,</span> <span class="fu">[</span><span class="dv">1</span> <span class="kw">+</span> <span class="st">&quot;1&quot;</span><span class="fu">]).</span></code></pre>
+</section>
+<section id="erlc-nonsense" class="slide level1">
+<h1>erlc nonsense</h1>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">erlc</span> -Werror nonsense.erl 
+<span class="kw">compile</span>: warnings being treated as errors
+<span class="kw">nonsense.erl</span>:5: this expression will fail with a
+  <span class="st">&#39;badarith&#39;</span> <span class="kw">exception</span>
+$ <span class="kw">echo</span> <span class="ot">$?</span>
+<span class="kw">1</span></code></pre>
+<ul>
+<li>Note that Erlang is a dynamic language!</li>
+</ul>
+</section>
+<section id="erlang-dialyzer-nonsense" class="slide level1">
+<h1>Erlang dialyzer nonsense</h1>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">dialyzer</span> nonsense.erl 
+<span class="kw">nonsense.erl</span>:4: Function start/0 has no local return
+<span class="kw">nonsense.erl</span>:5: The call erlang:<span class="st">&#39;+&#39;</span>(1,[49,...])
+  <span class="kw">will</span> never return since it differs in the 2nd
+  <span class="kw">argument</span> from the success typing arguments:
+  <span class="kw">(</span><span class="fu">number()</span>,<span class="fu">number()</span><span class="kw">)</span>
+ <span class="kw">done</span> <span class="kw">in</span> <span class="kw">0m0.52s</span>
+<span class="kw">done</span> <span class="kw">(warnings</span> were emitted<span class="kw">)</span></code></pre>
+</section>
+<section id="haskell-nonsense" class="slide level1">
+<h1>Haskell nonsense</h1>
+<pre class="sourceCode haskell"><code class="sourceCode haskell">
+main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu">+</span> <span class="st">&quot;1&quot;</span>)</code></pre>
+</section>
+<section id="haskell-nonsense-typed" class="slide level1">
+<h1>Haskell nonsense</h1>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">main ::</span> <span class="dt">IO</span> ()
+main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu">+</span> <span class="st">&quot;1&quot;</span>)</code></pre>
+</section>
+<section id="ghc-nonsense" class="slide level1">
+<h1>ghc nonsense</h1>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ghc</span> nonsense.hs 
+[<span class="kw">1</span> of 1] Compiling Main  ( nonsense.hs, nonsense.o )
+
+<span class="kw">nonsense.hs</span>:1:17:
+  <span class="kw">No</span> instance for (Num [Char]) <span class="kw">arising</span> from
+    <span class="kw">a</span> use of ‘+’
+  <span class="kw">In</span> the first argument of ‘print’,
+    <span class="kw">namely</span> ‘(1 + <span class="st">&quot;1&quot;</span>)’
+  <span class="kw">In</span> the expression: print (1 + <span class="st">&quot;1&quot;</span>)
+  <span class="kw">In</span> an equation for ‘main’: main = print (1 + <span class="st">&quot;1&quot;</span>)</code></pre>
+</section>
+<section id="nonsense-instance" class="slide level1">
+<h1>No instance for… WTF?</h1>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="dt">No</span> <span class="kw">instance</span> for (<span class="dt">Num</span> [<span class="dt">Char</span>]) arising from a use <span class="kw">of</span> <span class="ch">&#39;+&#39;</span></code></pre>
+<ul>
+<li>By default, strings in Haskell are lists of Char.</li>
+<li>Operations such as <code>+</code>, <code>-</code>, <code>*</code>, <code>negate</code> belong to the Num typeclass (handwavingly similar to a Python ABC)</li>
+<li>Only truly numeric types such as Int, Double, Integer, Rational have built-in instances for the Num typeclass</li>
+<li>You could (<em>but absolutely should not!</em>) implement such an instance to make this code compile. Don't do that. Seriously.</li>
+</ul>
+</section>
+<section id="why-is-refactoring-hard" class="slide level1">
+<h1>Why is refactoring hard?</h1>
+<ul>
+<li>Very hard to refactor without good tests</li>
+<li>Types <em>are</em> the obvious tests <em>and</em> documentation</li>
+<li>Refactoring in Haskell is easier due to types and referential transparency</li>
+<li>Can we do something like this in Python? Yes.</li>
+</ul>
+</section>
+<section id="breadth_first0" class="slide level1 wide-code">
+<h1></h1>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="co">&quot;&quot;&quot;Breadth-first traversal&quot;&quot;&quot;</span>
+
+
+
+<span class="kw">def</span> breadth_first(starting_node,
+                  edges):
+    <span class="co">&quot;&quot;&quot;Yield all nodes reachable from starting_node&quot;&quot;&quot;</span>
+    visited = []
+    queue = [starting_node]
+    <span class="kw">while</span> queue:
+        node = queue[<span class="dv">0</span>]; <span class="kw">del</span> queue[:<span class="dv">1</span>] <span class="co"># queue.pop(0)</span>
+        <span class="kw">if</span> node not in visited:
+            <span class="kw">yield</span> node
+            visited.append(node)
+            queue.extend(edges[node])</code></pre>
+</section>
+<section id="breadth_first1" class="slide level1 wide-code">
+<h1></h1>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="co">&quot;&quot;&quot;Breadth-first traversal&quot;&quot;&quot;</span>
+<span class="ch">from</span> typing <span class="ch">import</span> List, Dict, Iterator
+
+
+<span class="kw">def</span> breadth_first(starting_node: <span class="dt">int</span>,
+                  edges: Dict[<span class="dt">int</span>, List[<span class="dt">int</span>]]) -&gt; Iterator[<span class="dt">int</span>]:
+    <span class="co">&quot;&quot;&quot;Yield all nodes reachable from starting_node&quot;&quot;&quot;</span>
+    visited = List[<span class="dt">int</span>]()
+    queue = [starting_node]
+    <span class="kw">while</span> queue:
+        node = queue[<span class="dv">0</span>]; <span class="kw">del</span> queue[:<span class="dv">1</span>] <span class="co"># queue.pop(0)</span>
+        <span class="kw">if</span> node not in visited:
+            <span class="kw">yield</span> node
+            visited.append(node)
+            queue.extend(edges[node])</code></pre>
+</section>
+<section id="breadth_first2" class="slide level1 wide-code">
+<h1></h1>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="co">&quot;&quot;&quot;Breadth-first traversal&quot;&quot;&quot;</span>
+<span class="ch">from</span> typing <span class="ch">import</span> List, Dict, Set, Iterator
+<span class="ch">from</span> collections <span class="ch">import</span> deque
+
+<span class="kw">def</span> breadth_first(starting_node: <span class="dt">int</span>,
+                  edges: Dict[<span class="dt">int</span>, List[<span class="dt">int</span>]]) -&gt; Iterator[<span class="dt">int</span>]:
+    <span class="co">&quot;&quot;&quot;Yield all nodes reachable from starting_node&quot;&quot;&quot;</span>
+    visited = Set[<span class="dt">int</span>]()
+    queue = deque([starting_node])
+    <span class="kw">while</span> queue:
+        node = queue[<span class="dv">0</span>]; <span class="kw">del</span> queue[:<span class="dv">1</span>] <span class="co"># queue.pop(0)</span>
+        <span class="kw">if</span> node not in visited:
+            <span class="kw">yield</span> node
+            visited.append(node)
+            queue.extend(edges[node])</code></pre>
+</section>
+<section id="breadth_first2_err" class="slide level1 wide-code">
+<h1></h1>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">breadth_first2.py</span>: In function <span class="st">&quot;breadth_first&quot;</span>:
+<span class="kw">breadth_first2.py</span>, line 11:
+  <span class="kw">deque</span>[int] has no attribute <span class="st">&quot;__delitem__&quot;</span>
+<span class="kw">breadth_first2.py</span>, line 14:
+  <span class="kw">Set</span>[int] has no attribute <span class="st">&quot;append&quot;</span></code></pre>
+</section>
+<section id="breadth_first3" class="slide level1 wide-code">
+<h1></h1>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="co">&quot;&quot;&quot;Breadth-first traversal&quot;&quot;&quot;</span>
+<span class="ch">from</span> typing <span class="ch">import</span> Iterator, Dict, List, Set
+<span class="ch">from</span> collections <span class="ch">import</span> deque
+
+<span class="kw">def</span> breadth_first(starting_node: <span class="dt">int</span>,
+                  edges: Dict[<span class="dt">int</span>, List[<span class="dt">int</span>]]) -&gt; Iterator[<span class="dt">int</span>]:
+    <span class="co">&quot;&quot;&quot;Yield all nodes reachable from starting_node&quot;&quot;&quot;</span>
+    visited = Set[<span class="dt">int</span>]()
+    queue = deque([starting_node])
+    <span class="kw">while</span> queue:
+        node = queue.popleft()
+        <span class="kw">if</span> node not in visited:
+            <span class="kw">yield</span> node
+            visited.add(node)
+            queue.extend(edges[node])</code></pre>
+</section>
+<section id="solution-mypy" class="slide level1">
+<h1>Solution: mypy?</h1>
+<ul>
+<li><a href="http://mypy-lang.org/">mypy</a> is the most sensible approach I've seen so far</li>
+<li>The author needs some help! There are many tasks to do that do not require deep knowledge of mypy or type systems</li>
+<li>mypy does not yet catch the <code>1 + &quot;1&quot;</code> error yet, but can catch many other mistakes such as the refactoring example</li>
+<li>Why not X (<a href="http://pypy.org/">PyPy</a>, <a href="http://nuitka.net/">Nuitka</a>, …): these projects do nothing to assist with correctness and code quality!</li>
+</ul>
+</section>
+<section id="modest-mypy-proposal" class="slide level1">
+<h1>Modest mypy proposal</h1>
+<ul>
+<li>Start using <code>typing</code> module even in vanilla Python 3</li>
+<li>Support <code>typing</code> annotations in documentation tools</li>
+<li>Stop using <a href="http://legacy.python.org/dev/peps/pep-3107/">PEP 3107</a> function annotations for any other purpose</li>
+<li>Start using mypy to typecheck code when running tests / continuous integration</li>
+<li>Start contributing to mypy! :)</li>
+</ul>
+</section>
+<section id="so-what" class="slide level1">
+<h1>So what?</h1>
+<ul>
+<li>Code quality tools for Python are far behind other languages</li>
+<li>mypy is a huge step forward and can be used with existing Python 3 syntax and interpreter</li>
+<li>Would have to give up using function annotations for other purposes</li>
+</ul>
+</section>
+<section id="mutability-img" class="slide level1">
+<h1></h1>
+<p><img src="img/mutability.jpg" class="full"></p>
+</section>
+<section id="mutability" class="slide level1">
+<h1>Mutability</h1>
+<ul>
+<li>Mutability is the wrong default</li>
+<li>Very common source of bugs</li>
+<li>Prevents many optimizations (sharing, lock-free, etc.)</li>
+<li>Should be <em>opt-in</em></li>
+</ul>
+</section>
+<section id="why-is-mutability-wrong" class="slide level1">
+<h1>Why is mutability wrong?</h1>
+<ul>
+<li>Hard to understand code when underlying data might change</li>
+<li>Defensive programming is difficult</li>
+<li>Sharing is prevented by copying</li>
+<li>Concurrent access requires synchronization</li>
+</ul>
+</section>
+<section id="immutable" class="slide level1 tiny-title">
+<h1>Can we even fix this?</h1>
+<ul>
+<li>Requires large changes to the language and libraries :(</li>
+<li>See <a href="http://www.rust-lang.org/">Rust</a> or <a href="https://developer.apple.com/swift/">Swift</a> for good examples</li>
+<li>Haskell goes all the way (perhaps too far)</li>
+<li>Maybe opt-in immutability (Swift's <code>let</code>) is more practical for Python?</li>
+</ul>
+</section>
+<section id="expensive-abstractions" class="slide level1">
+<h1>Expensive Abstractions</h1>
+<ul>
+<li>Nothing is free. Function calls, classes, etc. do not typically get optimized away</li>
+<li>Classes aren't easy to analyze for correctness, as they are always open. Subclasses ruin everything.</li>
+<li>Python's interfaces are a bit of a mess, often focus too much on syntax and not enough on semantics</li>
+</ul>
+</section>
+<section id="algebraic-data-types" class="slide level1">
+<h1>Algebraic Data Types</h1>
+<ul>
+<li>Python has grown many hacks such as Enum, namedtuple, etc. that solve small parts of this problem</li>
+<li>Haskell (and other ML family languages) have an elegant solution to this</li>
+</ul>
+</section>
+<section id="python-adt-1" class="slide level1">
+<h1></h1>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> AST(<span class="dt">object</span>):
+    <span class="kw">def</span> <span class="dt">eval</span>(<span class="ot">self</span>):
+        <span class="kw">raise</span> <span class="ot">NotImplementedError</span>
+
+<span class="kw">class</span> Constant(AST):
+    <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, value):
+        <span class="ot">self</span>.value = value
+
+    <span class="kw">def</span> <span class="dt">eval</span>(<span class="ot">self</span>):
+        <span class="kw">return</span> <span class="ot">self</span>.value
+
+<span class="kw">class</span> Minus(AST):
+    <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, node):
+        <span class="ot">self</span>.node = node
+
+    <span class="kw">def</span> <span class="dt">eval</span>(<span class="ot">self</span>):
+        <span class="kw">return</span> <span class="ot">self</span>.node.<span class="dt">eval</span>()</code></pre>
+</section>
+<section id="python-adt-2" class="slide level1">
+<h1></h1>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> Add(AST):
+    <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, left, right):
+        <span class="ot">self</span>.left = left
+        <span class="ot">self</span>.right = right
+
+    <span class="kw">def</span> <span class="dt">eval</span>(<span class="ot">self</span>):
+        <span class="kw">return</span> <span class="ot">self</span>.left.<span class="dt">eval</span>() + <span class="ot">self</span>.right.<span class="dt">eval</span>()
+
+
+<span class="kw">class</span> Multiply(AST):
+    <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, left, right):
+        <span class="ot">self</span>.left = left
+        <span class="ot">self</span>.right = right
+
+    <span class="kw">def</span> <span class="dt">eval</span>(<span class="ot">self</span>):
+        <span class="kw">return</span> <span class="ot">self</span>.left.<span class="dt">eval</span>() + <span class="ot">self</span>.right.<span class="dt">eval</span>()</code></pre>
+</section>
+<section id="adt-in-haskell" class="slide level1">
+<h1>ADT in Haskell</h1>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">NumAST</span> ( <span class="dt">AST</span>(<span class="fu">..</span>), eval ) <span class="kw">where</span>
+
+<span class="kw">data</span> <span class="dt">AST</span> <span class="fu">=</span> <span class="dt">Constant</span> <span class="dt">Int</span>
+         <span class="fu">|</span> <span class="dt">Add</span> <span class="dt">AST</span> <span class="dt">AST</span>
+         <span class="fu">|</span> <span class="dt">Minus</span> <span class="dt">AST</span>
+         <span class="fu">|</span> <span class="dt">Multiply</span> <span class="dt">AST</span> <span class="dt">AST</span>
+         <span class="kw">deriving</span> (<span class="dt">Show</span>, <span class="dt">Eq</span>)
+
+<span class="ot">eval ::</span> <span class="dt">AST</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
+eval node <span class="fu">=</span> <span class="kw">case</span> node <span class="kw">of</span>
+  <span class="dt">Constant</span> n   <span class="ot">-&gt;</span> n
+  <span class="dt">Add</span> a b      <span class="ot">-&gt;</span> eval a <span class="fu">+</span> eval b
+  <span class="dt">Minus</span> n      <span class="ot">-&gt;</span> negate (eval n)
+  <span class="dt">Multiply</span> a b <span class="ot">-&gt;</span> eval a <span class="fu">*</span> eval b</code></pre>
+</section>
+<section id="wrapping-can-be-free" class="slide level1">
+<h1>Wrapping can be free</h1>
+<ul>
+<li>Haskell can define a wrapper for an existing data type at no runtime space cost (<code>newtype</code>)</li>
+<li>Strict fields can be inlined without boxing (no object overhead)</li>
+<li>Functions can be inlined (even cross-module)</li>
+<li>No reason for <code>1 + True == 2</code></li>
+</ul>
+</section>
+<section id="performance" class="slide level1">
+<h1>Performance?</h1>
+<ul>
+<li>Everything I've talked about provide more ahead-of-time information</li>
+<li>This information could be used by <a href="http://pypy.org/">PyPy</a>, <a href="http://numba.pydata.org/">Numba</a>, <a href="http://cython.org/">Cython</a>, etc.</li>
+<li>These features save developer time by making it easier to write correct code</li>
+<li>More information means more opportunities for optimization, so can lead to better performance</li>
+<li>Writing less code in C/C++ will allow the language to improve much more quickly (thank you <a href="http://pypy.org/">PyPy</a>!)</li>
+</ul>
+</section>
+<section id="summary" class="slide level1">
+<h1>Summary</h1>
+<ul>
+<li>Incorporate all of the good ideas from <a href="http://mypy-lang.org/">mypy</a> into Python</li>
+<li>Add some more of the conveniences from modern languages</li>
+<li>Enjoy a safer, faster, more capable Python</li>
+</ul>
+</section>
+<section id="thanks" class="slide level1">
+<h1>Thanks!</h1>
+<table>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 69%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><p><strong>Slides</strong></p></td>
+<td style="text-align: left;"><p><a href="http://bob.ippoli.to/python-haskell-ep2014/">bob.ippoli.to/python-haskell-ep2014</a></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><strong>Source</strong></p></td>
+<td style="text-align: left;"><p><a href="https://github.com/etrepum/python-haskell-ep2014/">github.com/etrepum/python-haskell-ep2014</a></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><strong>Email</strong></p></td>
+<td style="text-align: left;"><p>bob@redivi.com</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><strong>Twitter</strong></p></td>
+<td style="text-align: left;"><p><a href="https://twitter.com/etrepum">@etrepum</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.min.js"></script>
+
+  <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        history: true,
+        center: false,
+        slideNumber: true,
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+//          { src: 'reveal.js/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; }, }
+//          { src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+]});
+    </script>
+<script>
+  var p = window.location.protocol;
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script',(p === 'file:' ? 'https:' : p) + '//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-30504730-1', 'ippoli.to');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>
