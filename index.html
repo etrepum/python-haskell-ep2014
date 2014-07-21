@@ -382,7 +382,6 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
 <ul>
 <li>Nothing is free. Function calls, classes, etc. do not typically get optimized away</li>
 <li>Classes aren't easy to analyze for correctness, as they are always open. Subclasses ruin everything.</li>
-<li>Python's interfaces are a bit of a mess, often focus too much on syntax and not enough on semantics</li>
 </ul>
 </section>
 <section id="algebraic-data-types" class="slide level1">
@@ -447,6 +446,24 @@ eval node <span class="fu">=</span> <span class="kw">case</span> node <span clas
   <span class="dt">Add</span> a b      <span class="ot">-&gt;</span> eval a <span class="fu">+</span> eval b
   <span class="dt">Minus</span> n      <span class="ot">-&gt;</span> negate (eval n)
   <span class="dt">Multiply</span> a b <span class="ot">-&gt;</span> eval a <span class="fu">*</span> eval b</code></pre>
+</section>
+<section id="python-adt-2-1" class="slide level1 wide-code">
+<h1></h1>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> Add(AST):
+    <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, left, right):
+        <span class="ot">self</span>.left = left
+        <span class="ot">self</span>.right = right
+
+    <span class="kw">def</span> <span class="dt">eval</span>(<span class="ot">self</span>):
+        <span class="kw">return</span> <span class="ot">self</span>.left.<span class="dt">eval</span>() + <span class="ot">self</span>.right.<span class="dt">eval</span>()
+
+    <span class="kw">def</span> <span class="ot">__eq__</span>(<span class="ot">self</span>, other):
+        <span class="kw">return</span> (<span class="dt">isinstance</span>(other, Add) and
+                <span class="ot">self</span>.left == other.left and
+                <span class="ot">self</span>.right == other.right)
+
+    <span class="kw">def</span> <span class="ot">__repr__</span>(<span class="ot">self</span>):
+        <span class="kw">return</span> <span class="st">&#39;Add(</span><span class="ot">%r</span><span class="st">, </span><span class="ot">%r</span><span class="st">)&#39;</span> % (<span class="ot">self</span>.left, <span class="ot">self</span>.right)</code></pre>
 </section>
 <section id="wrapping-can-be-free" class="slide level1">
 <h1>Wrapping can be free</h1>

@@ -355,8 +355,6 @@ def breadth_first(starting_node: int,
   do not typically get optimized away
 * Classes aren't easy to analyze for correctness, as they are
   always open. Subclasses ruin everything.
-* Python's interfaces are a bit of a mess, often focus too much on syntax
-  and not enough on semantics
 
 # Algebraic Data Types
 
@@ -425,6 +423,26 @@ eval node = case node of
   Add a b      -> eval a + eval b
   Minus n      -> negate (eval n)
   Multiply a b -> eval a * eval b
+```
+
+# {#python-adt-2-1 .wide-code}
+
+```python
+class Add(AST):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def eval(self):
+        return self.left.eval() + self.right.eval()
+
+	def __eq__(self, other):
+		return (isinstance(other, Add) and
+	            self.left == other.left and
+				self.right == other.right)
+
+    def __repr__(self):
+		return 'Add(%r, %r)' % (self.left, self.right)
 ```
 
 # Wrapping can be free
