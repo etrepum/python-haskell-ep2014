@@ -10,14 +10,10 @@ reveal.js/.gitignore:
 	git submodule init
 	git submodule update
 
-d3/.gitignore:
-	git submodule init
-	git submodule update
-
 live:
 	$(HOBBES) | grep -v '/\.' --line-buffered | while read filename; do echo $$filename; make; done
 
-index.html: slides.md header.html default.revealjs Makefile | d3/.gitignore reveal.js/.gitignore
+index.html: slides.md header.html default.revealjs Makefile | reveal.js/.gitignore
 	$(PANDOC) -s \
 	  --mathjax \
 	  --include-in-header="header.html" \
