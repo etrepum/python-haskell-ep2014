@@ -235,7 +235,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
 <li>Can we do something like this in Python? Yes.</li>
 </ul>
 </section>
-<section id="breadth_first0" class="slide level1 wide-code">
+<section id="breadth_first0" class="slide level1 wide-code no-header">
 <h1></h1>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="co">&quot;&quot;&quot;Breadth-first traversal&quot;&quot;&quot;</span>
 
@@ -254,7 +254,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
             visited.append(node)
             queue.extend(edges[node])</code></pre>
 </section>
-<section id="breadth_first1" class="slide level1 wide-code">
+<section id="breadth_first1" class="slide level1 wide-code no-header">
 <h1></h1>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="co">&quot;&quot;&quot;Breadth-first traversal&quot;&quot;&quot;</span>
 <span class="ch">from</span> typing <span class="ch">import</span> List, Dict, Iterator
@@ -273,7 +273,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
             visited.append(node)
             queue.extend(edges[node])</code></pre>
 </section>
-<section id="breadth_first2" class="slide level1 wide-code">
+<section id="breadth_first2" class="slide level1 wide-code no-header">
 <h1></h1>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="co">&quot;&quot;&quot;Breadth-first traversal&quot;&quot;&quot;</span>
 <span class="ch">from</span> typing <span class="ch">import</span> List, Dict, Set, Iterator
@@ -292,7 +292,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
             visited.append(node)
             queue.extend(edges[node])</code></pre>
 </section>
-<section id="breadth_first2_err" class="slide level1 wide-code">
+<section id="breadth_first2_err" class="slide level1 wide-code no-header">
 <h1></h1>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">breadth_first2.py</span>: In function <span class="st">&quot;breadth_first&quot;</span>:
 <span class="kw">breadth_first2.py</span>, line 11:
@@ -300,7 +300,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
 <span class="kw">breadth_first2.py</span>, line 14:
   <span class="kw">Set</span>[int] has no attribute <span class="st">&quot;append&quot;</span></code></pre>
 </section>
-<section id="breadth_first3" class="slide level1 wide-code">
+<section id="breadth_first3" class="slide level1 wide-code no-header">
 <h1></h1>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="co">&quot;&quot;&quot;Breadth-first traversal&quot;&quot;&quot;</span>
 <span class="ch">from</span> typing <span class="ch">import</span> Iterator, Dict, List, Set
@@ -368,7 +368,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
 <li>Concurrent access requires synchronization</li>
 </ul>
 </section>
-<section id="immutable" class="slide level1 tiny-title">
+<section id="immutable" class="slide level1">
 <h1>Can we even fix this?</h1>
 <ul>
 <li>Requires large changes to the language and libraries :(</li>
@@ -391,7 +391,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
 <li>Haskell (and other ML family languages) have an elegant solution to this</li>
 </ul>
 </section>
-<section id="python-adt-1" class="slide level1 wide-code">
+<section id="python-adt-1" class="slide level1 wide-code no-header">
 <h1></h1>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> AST(<span class="dt">object</span>):
     <span class="kw">def</span> <span class="dt">eval</span>(<span class="ot">self</span>):
@@ -411,7 +411,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
     <span class="kw">def</span> <span class="dt">eval</span>(<span class="ot">self</span>):
         <span class="kw">return</span> <span class="ot">self</span>.node.<span class="dt">eval</span>()</code></pre>
 </section>
-<section id="python-adt-2" class="slide level1 wide-code">
+<section id="python-adt-2" class="slide level1 wide-code no-header">
 <h1></h1>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> Add(AST):
     <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, left, right):
@@ -447,7 +447,7 @@ eval node <span class="fu">=</span> <span class="kw">case</span> node <span clas
   <span class="dt">Minus</span> n      <span class="ot">-&gt;</span> negate (eval n)
   <span class="dt">Multiply</span> a b <span class="ot">-&gt;</span> eval a <span class="fu">*</span> eval b</code></pre>
 </section>
-<section id="python-adt-2-1" class="slide level1 wide-code">
+<section id="python-adt-2-1" class="slide level1 wide-code no-header">
 <h1></h1>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> Add(AST):
     <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, left, right):
@@ -482,6 +482,14 @@ eval node <span class="fu">=</span> <span class="kw">case</span> node <span clas
 <li>These features save developer time by making it easier to write correct code</li>
 <li>More information means more opportunities for optimization, so can lead to better performance</li>
 <li>Writing less code in C/C++ will allow the language to improve much more quickly (thank you <a href="http://pypy.org/">PyPy</a>!)</li>
+</ul>
+</section>
+<section id="concurrency" class="slide level1">
+<h1>Concurrency?</h1>
+<ul>
+<li>The Python C API and current semantics make removing the GIL a non-starter</li>
+<li>Fixing other deficiencies in the language will make the necessary refactorings easier, and in Python</li>
+<li>Mixed approach with workers written in a Python subset might be a nice transitional step (<a href="https://speakerdeck.com/trent/parallelism-and-concurrency-with-python">PyParallel</a>)</li>
 </ul>
 </section>
 <section id="summary" class="slide level1">

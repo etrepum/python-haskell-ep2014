@@ -204,7 +204,7 @@ No instance for (Num [Char]) arising from a use of '+'
   and referential transparency
 * Can we do something like this in Python? Yes.
 
-# {#breadth_first0 .wide-code}
+# {#breadth_first0 .wide-code .no-header}
 
 ```python
 """Breadth-first traversal"""
@@ -225,7 +225,7 @@ def breadth_first(starting_node,
             queue.extend(edges[node])
 ```
 
-# {#breadth_first1 .wide-code}
+# {#breadth_first1 .wide-code .no-header}
 
 ```python
 """Breadth-first traversal"""
@@ -246,7 +246,7 @@ def breadth_first(starting_node: int,
             queue.extend(edges[node])
 ```
 
-# {#breadth_first2 .wide-code}
+# {#breadth_first2 .wide-code .no-header}
 
 ```python
 """Breadth-first traversal"""
@@ -267,7 +267,7 @@ def breadth_first(starting_node: int,
             queue.extend(edges[node])
 ```
 
-# {#breadth_first2_err .wide-code}
+# {#breadth_first2_err .wide-code .no-header}
 
 ```bash
 breadth_first2.py: In function "breadth_first":
@@ -277,7 +277,7 @@ breadth_first2.py, line 14:
   Set[int] has no attribute "append"
 ```
 
-# {#breadth_first3 .wide-code}
+# {#breadth_first3 .wide-code .no-header}
 
 ```python
 """Breadth-first traversal"""
@@ -342,7 +342,7 @@ def breadth_first(starting_node: int,
 * Sharing is prevented by copying
 * Concurrent access requires synchronization
 
-# Can we even fix this? {#immutable .tiny-title}
+# Can we even fix this? {#immutable}
 
 * Requires large changes to the language and libraries :(
 * See [Rust] or [Swift] for good examples
@@ -363,7 +363,7 @@ def breadth_first(starting_node: int,
 * Haskell (and other ML family languages) have an elegant solution to
   this
 
-# {#python-adt-1 .wide-code}
+# {#python-adt-1 .wide-code .no-header}
 
 ```python
 class AST(object):
@@ -385,7 +385,7 @@ class Minus(AST):
         return self.node.eval()
 ```
 
-# {#python-adt-2 .wide-code}
+# {#python-adt-2 .wide-code .no-header}
 
 ```python
 class Add(AST):
@@ -425,7 +425,7 @@ eval node = case node of
   Multiply a b -> eval a * eval b
 ```
 
-# {#python-adt-2-1 .wide-code}
+# {#python-adt-2-1 .wide-code .no-header}
 
 ```python
 class Add(AST):
@@ -464,6 +464,15 @@ class Add(AST):
 * Writing less code in C/C++ will allow the language to improve much
   more quickly (thank you [PyPy]!)
 
+# Concurrency? {#concurrency}
+
+* The Python C API and current semantics make removing the GIL
+  a non-starter
+* Fixing other deficiencies in the language will make the necessary
+  refactorings easier, and in Python
+* Mixed approach with workers written in a Python subset
+  might be a nice transitional step ([PyParallel])
+
 # Summary
 
 * Incorporate all of the good ideas from [mypy] into Python
@@ -494,3 +503,4 @@ class Add(AST):
 [Rust]: http://www.rust-lang.org/
 [Haskell]: http://www.haskell.org/
 [Blub Paradox]: http://www.paulgraham.com/avg.html
+[PyParallel]: https://speakerdeck.com/trent/parallelism-and-concurrency-with-python
