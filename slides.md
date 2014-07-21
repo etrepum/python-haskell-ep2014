@@ -403,7 +403,7 @@ class Multiply(AST):
         self.right = right
 
     def eval(self):
-        return self.left.eval() + self.right.eval()
+        return self.left.eval() * self.right.eval()
 ```
 
 # ADT in Haskell
