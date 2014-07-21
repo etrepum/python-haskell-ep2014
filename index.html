@@ -184,7 +184,7 @@ $ <span class="kw">echo</span> <span class="ot">$?</span>
 <li>Note that Erlang is a dynamic language!</li>
 </ul>
 </section>
-<section id="erlang-dialyzer-nonsense" class="slide level1">
+<section id="erlang-dialyzer-nonsense" class="slide level1 wide-code">
 <h1>Erlang dialyzer nonsense</h1>
 <pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">dialyzer</span> nonsense.erl 
 <span class="kw">nonsense.erl</span>:4: Function start/0 has no local return
@@ -205,7 +205,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
 <pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">main ::</span> <span class="dt">IO</span> ()
 main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu">+</span> <span class="st">&quot;1&quot;</span>)</code></pre>
 </section>
-<section id="ghc-nonsense" class="slide level1">
+<section id="ghc-nonsense" class="slide level1 wide-code">
 <h1>ghc nonsense</h1>
 <pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ghc</span> nonsense.hs 
 [<span class="kw">1</span> of 1] Compiling Main  ( nonsense.hs, nonsense.o )
@@ -218,7 +218,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
   <span class="kw">In</span> the expression: print (1 + <span class="st">&quot;1&quot;</span>)
   <span class="kw">In</span> an equation for ‘main’: main = print (1 + <span class="st">&quot;1&quot;</span>)</code></pre>
 </section>
-<section id="nonsense-instance" class="slide level1">
+<section id="nonsense-instance" class="slide level1 wide-code">
 <h1>No instance for… WTF?</h1>
 <pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="dt">No</span> <span class="kw">instance</span> for (<span class="dt">Num</span> [<span class="dt">Char</span>]) arising from a use <span class="kw">of</span> <span class="ch">&#39;+&#39;</span></code></pre>
 <ul>
@@ -245,6 +245,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
 
 <span class="kw">def</span> breadth_first(starting_node,
                   edges):
+
     <span class="co">&quot;&quot;&quot;Yield all nodes reachable from starting_node&quot;&quot;&quot;</span>
     visited = []
     queue = [starting_node]
@@ -262,7 +263,8 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
 
 
 <span class="kw">def</span> breadth_first(starting_node: <span class="dt">int</span>,
-                  edges: Dict[<span class="dt">int</span>, List[<span class="dt">int</span>]]) -&gt; Iterator[<span class="dt">int</span>]:
+                  edges: Dict[<span class="dt">int</span>, List[<span class="dt">int</span>]])
+                  -&gt; Iterator[<span class="dt">int</span>]:
     <span class="co">&quot;&quot;&quot;Yield all nodes reachable from starting_node&quot;&quot;&quot;</span>
     visited = List[<span class="dt">int</span>]()
     queue = [starting_node]
@@ -280,7 +282,8 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
 <span class="ch">from</span> collections <span class="ch">import</span> deque
 
 <span class="kw">def</span> breadth_first(starting_node: <span class="dt">int</span>,
-                  edges: Dict[<span class="dt">int</span>, List[<span class="dt">int</span>]]) -&gt; Iterator[<span class="dt">int</span>]:
+                  edges: Dict[<span class="dt">int</span>, List[<span class="dt">int</span>]])
+                  -&gt; Iterator[<span class="dt">int</span>]:
     <span class="co">&quot;&quot;&quot;Yield all nodes reachable from starting_node&quot;&quot;&quot;</span>
     visited = Set[<span class="dt">int</span>]()
     queue = deque([starting_node])
@@ -306,7 +309,8 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
 <span class="ch">from</span> collections <span class="ch">import</span> deque
 
 <span class="kw">def</span> breadth_first(starting_node: <span class="dt">int</span>,
-                  edges: Dict[<span class="dt">int</span>, List[<span class="dt">int</span>]]) -&gt; Iterator[<span class="dt">int</span>]:
+                  edges: Dict[<span class="dt">int</span>, List[<span class="dt">int</span>]])
+                  -&gt; Iterator[<span class="dt">int</span>]:
     <span class="co">&quot;&quot;&quot;Yield all nodes reachable from starting_node&quot;&quot;&quot;</span>
     visited = Set[<span class="dt">int</span>]()
     queue = deque([starting_node])
@@ -390,7 +394,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
 <li>Haskell (and other ML family languages) have an elegant solution to this</li>
 </ul>
 </section>
-<section id="python-adt-1" class="slide level1">
+<section id="python-adt-1" class="slide level1 wide-code">
 <h1></h1>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> AST(<span class="dt">object</span>):
     <span class="kw">def</span> <span class="dt">eval</span>(<span class="ot">self</span>):
@@ -410,7 +414,7 @@ main <span class="fu">=</span> print (<span class="dv">1</span> <span class="fu"
     <span class="kw">def</span> <span class="dt">eval</span>(<span class="ot">self</span>):
         <span class="kw">return</span> <span class="ot">self</span>.node.<span class="dt">eval</span>()</code></pre>
 </section>
-<section id="python-adt-2" class="slide level1">
+<section id="python-adt-2" class="slide level1 wide-code">
 <h1></h1>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> Add(AST):
     <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, left, right):

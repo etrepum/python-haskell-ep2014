@@ -140,7 +140,7 @@ $ echo $?
 
 * Note that Erlang is a dynamic language!
 
-# Erlang dialyzer nonsense
+# Erlang dialyzer nonsense {.wide-code}
 
 ```bash
 $ dialyzer nonsense.erl 
@@ -167,7 +167,7 @@ main :: IO ()
 main = print (1 + "1")
 ```
 
-# ghc nonsense
+# ghc nonsense {.wide-code}
 
 ```bash
 $ ghc nonsense.hs 
@@ -182,7 +182,7 @@ nonsense.hs:1:17:
   In an equation for ‘main’: main = print (1 + "1")
 ```
 
-# No instance for… WTF? {#nonsense-instance}
+# No instance for… WTF? {#nonsense-instance .wide-code}
 
 ```haskell
 No instance for (Num [Char]) arising from a use of '+'
@@ -213,7 +213,8 @@ No instance for (Num [Char]) arising from a use of '+'
 
 def breadth_first(starting_node,
                   edges):
-    """Yield all nodes reachable from starting_node"""
+
+	"""Yield all nodes reachable from starting_node"""
     visited = []
     queue = [starting_node]
     while queue:
@@ -232,7 +233,8 @@ from typing import List, Dict, Iterator
 
 
 def breadth_first(starting_node: int,
-                  edges: Dict[int, List[int]]) -> Iterator[int]:
+                  edges: Dict[int, List[int]])
+				  -> Iterator[int]:
     """Yield all nodes reachable from starting_node"""
     visited = List[int]()
     queue = [starting_node]
@@ -252,7 +254,8 @@ from typing import List, Dict, Set, Iterator
 from collections import deque
 
 def breadth_first(starting_node: int,
-                  edges: Dict[int, List[int]]) -> Iterator[int]:
+                  edges: Dict[int, List[int]])
+				  -> Iterator[int]:
     """Yield all nodes reachable from starting_node"""
     visited = Set[int]()
     queue = deque([starting_node])
@@ -282,7 +285,8 @@ from typing import Iterator, Dict, List, Set
 from collections import deque
 
 def breadth_first(starting_node: int,
-                  edges: Dict[int, List[int]]) -> Iterator[int]:
+                  edges: Dict[int, List[int]])
+				  -> Iterator[int]:
     """Yield all nodes reachable from starting_node"""
     visited = Set[int]()
     queue = deque([starting_node])
@@ -361,7 +365,7 @@ def breadth_first(starting_node: int,
 * Haskell (and other ML family languages) have an elegant solution to
   this
 
-# {#python-adt-1}
+# {#python-adt-1 .wide-code}
 
 ```python
 class AST(object):
@@ -383,7 +387,7 @@ class Minus(AST):
         return self.node.eval()
 ```
 
-# {#python-adt-2}
+# {#python-adt-2 .wide-code}
 
 ```python
 class Add(AST):
